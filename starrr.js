@@ -1,3 +1,8 @@
+/*
+modified version of https://github.com/dobtco/starrr.
+allows readonly element.
+*/
+
 var __slice = [].slice;
 
 (function($, window) {
@@ -6,8 +11,9 @@ var __slice = [].slice;
     Starrr.prototype.defaults = {
       rating: void 0,
       numStars: 5,
-      emptyStarClass: 'fa fa-star-o',
-      fullStarClass: 'fa fa-star',
+      emptyStarClass: 'glyphicon glyphicon-star-empty',
+      fullStarClass: 'glyphicon glyphicon-star',
+      readonly: false,
       change: function(e, value) {}
     };
 
@@ -32,28 +38,36 @@ var __slice = [].slice;
         return;
       }
       this.$el.on('mouseover.starrr', 'i', (function(_this) {
-        return function(e) {
-          return _this.syncRating(_this.getStars().index(e.currentTarget) + 1);
-        };
+          return function(e) {
+            if (_this.options.readonly == false){
+            return _this.syncRating(_this.getStars().index(e.currentTarget) + 1);
+          }
+        };       
       })(this));
       this.$el.on('mouseout.starrr', (function(_this) {
-        return function() {
-          return _this.syncRating();
-        };
+          return function() {
+            if (_this.options.readonly == false){
+              return _this.syncRating();
+            }
+          };
       })(this));
       this.$el.on('click.starrr', 'i', (function(_this) {
-        return function(e) {
-          return _this.setRating(_this.getStars().index(e.currentTarget) + 1);
-        };
+          return function(e) {
+            if (_this.options.readonly == false){
+              return _this.setRating(_this.getStars().index(e.currentTarget) + 1);
+            }
+          };
       })(this));
       this.$el.on('starrr:change', this.options.change);
       if (this.$connectedInput != null) {
         this.$el.on('starrr:change', (function(_this) {
-          return function(e, value) {
-            _this.$connectedInput.val(value);
-            return _this.$connectedInput.trigger('focusout');
-          };
-        })(this));
+            return function(e, value) {
+              if (_this.options.readonly == false){
+                _this.$connectedInput.val(value);
+                return _this.$connectedInput.trigger('focusout');
+              }
+            };
+      })(this));
       }
     }
 
@@ -121,7 +135,3 @@ var __slice = [].slice;
     }
   });
 })(window.jQuery, window);
-
-$(function() {
-  return $(".starrr").starrr();
-});
